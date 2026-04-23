@@ -1,33 +1,24 @@
-const express = require("express");
-const app = express();
+// BOTONES "AÑADIR"
+const botones = document.querySelectorAll(".producto button");
 
-const PORT = process.env.PORT || 10000;
+// LISTA DE PRODUCTOS (desde servidor)
+let carrito = [];
 
-// Middleware
-app.use(express.json());
-app.use(express.static(".")); // sirve index.html
+// AÑADIR PRODUCTO AL SERVIDOR
+botones.forEach(boton => {
+  boton.addEventListener("click", async () => {
+    const producto = boton.parentElement;
+    const nombre = producto.querySelector("h3").textContent;
+    const precio = producto.querySelector("p").textContent.replace("€", "");
 
-// Base de datos en memoria
-let productos = [];
+    await fetch("/productos", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ nombre, precio })
+    });
 
-// GET productos
-app.get("/productos", (req, res) => {
-  res.json(productos);
-});
-
-// POST producto
-app.post("/productos", (req, res) => {
-  const { nombre, precio } = req.body;
-
-  if (!nombre || !precio) {
-    return res.status(400).json({ error: "Faltan datos" });
-  }
-
-  productos.push({ nombre, precio });
-  res.json({ ok: true });
-});
-
-// Iniciar servidor
-app.listen(PORT, () => {
-  console.log("Servidor corriendo en puerto " + PORT);
+    alert("Producto añadido correctamente");
+  });
 });
