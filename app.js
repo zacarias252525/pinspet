@@ -1,32 +1,39 @@
-const express = require("express");
-const app = express();
+// Obtener elementos
+const form = document.getElementById("form-producto");
+const lista = document.getElementById("lista-productos");
 
-app.use(express.json());
-app.use(express.static(".")); 
+// Cargar productos al iniciar
+async function cargarProductos() {
+  const res = await fetch("/productos");
+  const productos = await res.json();
 
-let pedidos = [];
+  lista.innerHTML = "";
 
-// Crear pedido
-app.post("/pedido", (req, res) => {
-  pedidos.push(req.body);
-  console.log("Nuevo pedido:", req.body);
-  res.send({ ok: true });
+  productos.forEach(p => {
+    const li = document.createElement("li");
+    li.textContent = `${p.nombre} - ${p.precio}€`;
+    lista.appendChild(li);
+  });
+}
+
+// Añadir producto
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const nombre = document.getElementById("nombre").value;
+  const precio = document.getElementById("precio").value;
+
+  await fetch("/productos", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ nombre, precio })
+  });
+
+  form.reset();
+  cargarProductos();
 });
 
-// Obtener pedidos
-app.get("/pedidos", (req, res) => {
-  res.send(pedidos);
-});
-
-// Borrar pedidos
-app.delete("/pedidos", (req, res) => {
-  pedidos = [];
-  res.send({ ok: true });
-});
-
-// 🔥 IMPORTANTE PARA RENDER
-const PORT = process.env.PORT || 3000;
-
-app.listen(PORT, () => {
-  console.log("Servidor corriendo en puerto " + PORT);
-});
+// Cargar al inicio
+cargarProductos();
