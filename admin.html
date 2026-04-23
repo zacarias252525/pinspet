@@ -1,61 +1,38 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-<title>Panel de pedidos</title>
+    <meta charset="UTF-8">
+    <title>Admin - Pedidos</title>
 </head>
 <body>
 
-<h1>📦 Panel de pedidos</h1>
+<h1>📦 Pedidos</h1>
 
-<div id="pedidos"></div>
+<button onclick="cargarPedidos()">Cargar pedidos</button>
+
+<ul id="listaPedidos"></ul>
 
 <script>
-async function cargarPedidos() {
-    const res = await fetch("/pedidos");
-    const pedidos = await res.json();
+function cargarPedidos() {
+    fetch("/pedidos")
+        .then(res => res.json())
+        .then(data => {
+            const lista = document.getElementById("listaPedidos");
+            lista.innerHTML = "";
 
-    const contenedor = document.getElementById("pedidos");
-    contenedor.innerHTML = "";
+            data.forEach(pedido => {
+                const li = document.createElement("li");
 
-    pedidos.forEach((pedido, index) => {
-        let total = 0;
+                li.textContent = `
+Cliente: ${pedido.cliente.nombre} | 
+Dirección: ${pedido.cliente.direccion} | 
+Total: ${pedido.total}€
+                `;
 
-        const div = document.createElement("div");
-        div.style.border = "1px solid #ccc";
-        div.style.margin = "10px";
-        div.style.padding = "10px";
-
-        let html = `<h3>Pedido #${index + 1}</h3>`;
-        html += `<p><strong>${pedido.cliente.nombre}</strong></p>`;
-        html += `<p>${pedido.cliente.direccion}</p>`;
-        html += `<p>Estado: <strong>${pedido.estado}</strong></p>`;
-
-        pedido.productos.forEach(item => {
-            total += item.precio;
-            html += `<p>${item.nombre} - ${item.precio}€</p>`;
+                lista.appendChild(li);
+            });
         });
-
-        html += `<strong>Total: ${total}€</strong><br>`;
-
-        if (pedido.estado === "pendiente") {
-            html += `<button onclick="entregar(${index})">Marcar entregado</button>`;
-        }
-
-        div.innerHTML = html;
-        contenedor.appendChild(div);
-    });
 }
-
-async function entregar(id) {
-    await fetch("/pedidos/" + id, {
-        method: "PUT"
-    });
-
-    cargarPedidos();
-}
-
-setInterval(cargarPedidos, 3000);
-cargarPedidos();
 </script>
 
 </body>
