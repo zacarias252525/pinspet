@@ -38,8 +38,38 @@ function vaciarCarrito() {
     total = 0;
     actualizarCarrito();
 }
-
 function finalizarPedido() {
+    const nombre = document.getElementById("nombre").value;
+    const direccion = document.getElementById("direccion").value;
+
+    if (!nombre || !direccion) {
+        alert("Por favor completa tus datos");
+        return;
+    }
+
+    const pedido = {
+        cliente: { nombre, direccion },
+        productos: carrito,
+        total: total
+    };
+
+    fetch("/pedido", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(pedido)
+    })
+    .then(res => res.json())
+    .then(data => {
+        alert("Pedido enviado correctamente ✅");
+        vaciarCarrito();
+    })
+    .catch(err => {
+        alert("Error al enviar pedido ❌");
+        console.error(err);
+    });
+}
     const nombre = document.getElementById("nombre").value;
     const direccion = document.getElementById("direccion").value;
 
