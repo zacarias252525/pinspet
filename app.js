@@ -5,10 +5,10 @@ const path = require("path");
 app.use(express.json());
 app.use(express.static(__dirname));
 
-// 🔥 Aquí guardamos pedidos (temporal)
+// 📦 Base de datos temporal
 let pedidos = [];
 
-// 📦 Ruta para recibir pedidos
+// 📥 Recibir pedido
 app.post("/pedido", (req, res) => {
     const pedido = req.body;
 
@@ -17,6 +17,11 @@ app.post("/pedido", (req, res) => {
     pedidos.push(pedido);
 
     res.json({ mensaje: "Pedido guardado correctamente" });
+});
+
+// 👀 Ver pedidos
+app.get("/pedidos", (req, res) => {
+    res.json(pedidos);
 });
 
 const PORT = process.env.PORT || 10000;
