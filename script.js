@@ -1,24 +1,43 @@
-const botones = document.querySelectorAll(".producto button");
-
 let carrito = [];
 let total = 0;
 
-botones.forEach((boton, index) => {
-  boton.addEventListener("click", () => {
-    const producto = index === 0 
-      ? { nombre: "Pienso Premium", precio: 15 }
-      : { nombre: "Snack", precio: 5 };
-
-    carrito.push(producto);
-    total += producto.precio;
-
+function agregarAlCarrito(nombre, precio) {
+    carrito.push({ nombre, precio });
+    total += precio;
     actualizarCarrito();
-  });
-});
+}
 
 function actualizarCarrito() {
-  document.querySelector(".carrito").innerHTML = `
-    <h2>🛒 Carrito</h2>
-    <p>Total: ${total} €</p>
-  `;
+    const lista = document.getElementById("carritoLista");
+    const totalSpan = document.getElementById("total");
+
+    lista.innerHTML = "";
+
+    carrito.forEach(producto => {
+        const li = document.createElement("li");
+        li.textContent = `${producto.nombre} - ${producto.precio}€`;
+        lista.appendChild(li);
+    });
+
+    totalSpan.textContent = total;
+}
+
+function vaciarCarrito() {
+    carrito = [];
+    total = 0;
+    actualizarCarrito();
+}
+
+function finalizarPedido() {
+    const nombre = document.getElementById("nombre").value;
+    const direccion = document.getElementById("direccion").value;
+
+    if (!nombre || !direccion) {
+        alert("Por favor completa tus datos");
+        return;
+    }
+
+    alert(`Pedido realizado por ${nombre}. Total: ${total}€`);
+
+    vaciarCarrito();
 }
