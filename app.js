@@ -1,67 +1,32 @@
-let carrito = [];
+const express = require("express");
+const app = express();
 
-function agregarAlCarrito(nombre, precio) {
-    carrito.push({ nombre, precio });
-    actualizarCarrito();
-}
+app.use(express.json());
+app.use(express.static(".")); 
 
-function actualizarCarrito() {
-    const lista = document.getElementById("carritoLista");
-    lista.innerHTML = "";
+let pedidos = [];
 
-    let total = 0;
+// Crear pedido
+app.post("/pedido", (req, res) => {
+  pedidos.push(req.body);
+  console.log("Nuevo pedido:", req.body);
+  res.send({ ok: true });
+});
 
-    carrito.forEach(item => {
-        total += item.precio;
+// Obtener pedidos
+app.get("/pedidos", (req, res) => {
+  res.send(pedidos);
+});
 
-        const li = document.createElement("li");
-        li.textContent = item.nombre + " - " + item.precio + "€";
-        lista.appendChild(li);
-    });
+// Borrar pedidos
+app.delete("/pedidos", (req, res) => {
+  pedidos = [];
+  res.send({ ok: true });
+});
 
-    document.getElementById("total").textContent = total;
-}
+// 🔥 IMPORTANTE PARA RENDER
+const PORT = process.env.PORT || 3000;
 
-function vaciarCarrito() {
-    carrito = [];
-    actualizarCarrito();
-}
-
-async function finalizarPedido() {
-    const nombre = document.getElementById("nombre").value;
-    const direccion = document.getElementById("direccion").value;
-
-    if (carrito.length === 0) {
-        alert("Carrito vacío");
-        return;
-    }
-
-    if (!nombre || !direccion) {
-        alert("Completa tus datos");
-        return;
-    }
-
-    const pedido = {
-        cliente: {
-            nombre,
-            direccion
-        },
-        productos: carrito
-    };
-
-    await fetch("/pedidos", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(pedido)
-    });
-
-    alert("Pedido enviado");
-
-    carrito = [];
-    actualizarCarrito();
-
-    document.getElementById("nombre").value = "";
-    document.getElementById("direccion").value = "";
-}
+app.listen(PORT, () => {
+  console.log("Servidor corriendo en puerto " + PORT);
+});
