@@ -17,6 +17,8 @@ function actualizarCarrito() {
     const lista = document.getElementById("carritoLista");
     const totalSpan = document.getElementById("total");
 
+    if (!lista || !totalSpan) return;
+
     lista.innerHTML = "";
 
     carrito.forEach((producto, index) => {
@@ -38,6 +40,7 @@ function vaciarCarrito() {
     total = 0;
     actualizarCarrito();
 }
+
 function finalizarPedido() {
     const nombre = document.getElementById("nombre").value;
     const direccion = document.getElementById("direccion").value;
@@ -69,16 +72,4 @@ function finalizarPedido() {
         alert("Error al enviar pedido ❌");
         console.error(err);
     });
-}
-    const nombre = document.getElementById("nombre").value;
-    const direccion = document.getElementById("direccion").value;
-
-    if (!nombre || !direccion) {
-        alert("Por favor completa tus datos");
-        return;
-    }
-
-    alert(`Pedido realizado por ${nombre}. Total: ${total}€`);
-
-    vaciarCarrito();
 }
