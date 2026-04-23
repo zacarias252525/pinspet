@@ -7,15 +7,26 @@ function agregarAlCarrito(nombre, precio) {
     actualizarCarrito();
 }
 
+function eliminarProducto(index) {
+    total -= carrito[index].precio;
+    carrito.splice(index, 1);
+    actualizarCarrito();
+}
+
 function actualizarCarrito() {
     const lista = document.getElementById("carritoLista");
     const totalSpan = document.getElementById("total");
 
     lista.innerHTML = "";
 
-    carrito.forEach(producto => {
+    carrito.forEach((producto, index) => {
         const li = document.createElement("li");
-        li.textContent = `${producto.nombre} - ${producto.precio}€`;
+
+        li.innerHTML = `
+            ${producto.nombre} - ${producto.precio}€
+            <button onclick="eliminarProducto(${index})">❌</button>
+        `;
+
         lista.appendChild(li);
     });
 
