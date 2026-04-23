@@ -1,39 +1,33 @@
-// Obtener elementos
-const form = document.getElementById("form-producto");
-const lista = document.getElementById("lista-productos");
+const express = require("express");
+const app = express();
 
-// Cargar productos al iniciar
-async function cargarProductos() {
-  const res = await fetch("/productos");
-  const productos = await res.json();
+const PORT = process.env.PORT || 10000;
 
-  lista.innerHTML = "";
+// Middleware
+app.use(express.json());
+app.use(express.static(".")); // sirve index.html
 
-  productos.forEach(p => {
-    const li = document.createElement("li");
-    li.textContent = `${p.nombre} - ${p.precio}€`;
-    lista.appendChild(li);
-  });
-}
+// Base de datos en memoria
+let productos = [];
 
-// Añadir producto
-form.addEventListener("submit", async (e) => {
-  e.preventDefault();
-
-  const nombre = document.getElementById("nombre").value;
-  const precio = document.getElementById("precio").value;
-
-  await fetch("/productos", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ nombre, precio })
-  });
-
-  form.reset();
-  cargarProductos();
+// GET productos
+app.get("/productos", (req, res) => {
+  res.json(productos);
 });
 
-// Cargar al inicio
-cargarProductos();
+// POST producto
+app.post("/productos", (req, res) => {
+  const { nombre, precio } = req.body;
+
+  if (!nombre || !precio) {
+    return res.status(400).json({ error: "Faltan datos" });
+  }
+
+  productos.push({ nombre, precio });
+  res.json({ ok: true });
+});
+
+// Iniciar servidor
+app.listen(PORT, () => {
+  console.log("Servidor corriendo en puerto " + PORT);
+});
