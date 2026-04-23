@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Tienda para perros</title>
+
+<style>
+body {
+    font-family: Arial;
+    background: #f4f4f4;
+    padding: 20px;
+}
+
+h1 {
+    text-align: center;
+}
+
+.container {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+}
+
+.producto {
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+    width: 200px;
+    text-align: center;
+}
+
+button {
+    background: #ff6600;
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.carrito {
+    background: white;
+    padding: 15px;
+    margin-top: 20px;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+input {
+    width: 100%;
+    margin: 5px 0;
+    padding: 8px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🐶 Tienda de comida para perros</h1>
+
+<div class="container">
+
+<div class="producto">
+<h2>Pienso Premium</h2>
+<p>15€</p>
+<button onclick="agregarAlCarrito('Pienso Premium', 15)">Añadir</button>
+</div>
+
+<div class="producto">
+<h2>Snack</h2>
+<p>5€</p>
+<button onclick="agregarAlCarrito('Snack', 5)">Añadir</button>
+</div>
+
+</div>
+
+<div class="carrito">
+
+<h2>🛒 Carrito</h2>
+
+<ul id="carritoLista"></ul>
+
+<p><strong>Total: <span id="total">0</span> €</strong></p>
+
+<h3>📍 Datos del cliente</h3>
+
+<input id="nombre" placeholder="Nombre">
+<input id="direccion" placeholder="Dirección">
+
+<button onclick="vaciarCarrito()">Vaciar</button>
+<button onclick="finalizarPedido()">Finalizar pedido</button>
+
+</div>
+
+<script src="app.js"></script>
+
+</body>
+</html>

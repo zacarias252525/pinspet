@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Panel de pedidos</title>
+</head>
+<body>
+
+<h1>📦 Panel de pedidos</h1>
+
+<div id="pedidos"></div>
+
+<script>
+async function cargarPedidos() {
+    const res = await fetch("/pedidos");
+    const pedidos = await res.json();
+
+    const contenedor = document.getElementById("pedidos");
+    contenedor.innerHTML = "";
+
+    pedidos.forEach((pedido, index) => {
+        let total = 0;
+
+        const div = document.createElement("div");
+        div.style.border = "1px solid #ccc";
+        div.style.margin = "10px";
+        div.style.padding = "10px";
+
+        let html = `<h3>Pedido #${index + 1}</h3>`;
+        html += `<p><strong>${pedido.cliente.nombre}</strong></p>`;
+        html += `<p>${pedido.cliente.direccion}</p>`;
+        html += `<p>Estado: <strong>${pedido.estado}</strong></p>`;
+
+        pedido.productos.forEach(item => {
+            total += item.precio;
+            html += `<p>${item.nombre} - ${item.precio}€</p>`;
+        });
+
+        html += `<strong>Total: ${total}€</strong><br>`;
+
+        if (pedido.estado === "pendiente") {
+            html += `<button onclick="entregar(${index})">Marcar entregado</button>`;
+        }
+
+        div.innerHTML = html;
+        contenedor.appendChild(div);
+    });
+}
+
+async function entregar(id) {
+    await fetch("/pedidos/" + id, {
+        method: "PUT"
+    });
+
+    cargarPedidos();
+}
+
+setInterval(cargarPedidos, 3000);
+cargarPedidos();
+</script>
+
+</body>
+</html>
